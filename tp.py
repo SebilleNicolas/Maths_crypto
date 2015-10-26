@@ -117,7 +117,19 @@ n=100
 print "naive_euler_function(",n,")=",naive_euler_function(n)
 
 def tables(n):
-	print
+	maxi = n-1
+	# Ligne - Colonne
+	tab = [[0] * n for _ in range(n)]
+	mult = [[0] * n for _ in range(n)]
+	for ligne in range (0,n):
+		for col in range(0,n):
+			tab[ligne][col] = (ligne + col)%n
+			mult[ligne][col] = (ligne * col)%n
+	print "TAB ADDITION"
+	print tab
+
+	print "TAB multiplication"
+	print mult
 
 tables(5)
 
