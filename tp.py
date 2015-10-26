@@ -105,7 +105,13 @@ L2=[2,0,2]
 print "euler_function(",L1,",",L2,")=",euler_function(L1,L2)
 
 def naive_euler_function(n):
-	return 0
+	count = 0
+	for i in range(1,n):
+		phi = euclid(i,n)
+		if phi == 1:
+			count = count+1
+
+	return count
 
 n=100
 print "naive_euler_function(",n,")=",naive_euler_function(n)
