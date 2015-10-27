@@ -134,28 +134,62 @@ def tables(n):
 tables(5)
 
 def inversibles(n):
-	return []
+	mult = [[0] * n for _ in range(n)]
+	tab_inversible = []
+	for ligne in range (0,n):
+		for col in range(0,n):
+			mult[ligne][col] = (ligne * col)%n
+			if mult[ligne][col] == 1:
+				tab_inversible.append(ligne) 
+	return tab_inversible
 
 n=10
-print "Les inversibles modulo ",n," sont:", inversibles(10)
+print "Les inversibles modulo ",n," sont:", inversibles(n)
 
 def ordre(a,n):
-	return 0
+	if euclid(a,n) == 1:
+		cpt = 1
+		while (a**cpt)%n != 1:
+			cpt=cpt+1
+	return cpt
 
 n=9
 a=2
 print "l'ordre de ",a," modulo ",n," est ",ordre(a,n)
 
 def generateur(n):
-	return 0
+	phi = naive_euler_function(n)
+	tab_invers=inversibles(n)
+	i=0
+	while ordre(tab_invers[i],n) != phi:
+		i+=1
+	g = tab_invers[i]
+	return g
 
 n=17
 print "Un generateur modulo ",n," est ",generateur(n)
 
 def CRT(L1,L2):
-	return 0
-
-L1=[2,3,5]
+	if len(L1) == len(L2):
+		produit_mod = 1
+		tab_mod_inv = []
+		tab_prod_partiel = []
+		total = 0
+		# Calcul le produit modulaire
+		for i in range(0,len(L1)):
+			produit_mod = produit_mod * L1[i]
+		# Calcul de l'inverse modulaire
+		for i in range(0,len(L1)):
+			calc = produit_mod/L1[i]
+			tab_prod_partiel.append(calc)
+			mod = modular_inverse(calc,L1[i])
+			tab_mod_inv.append(mod)
+		# On fait multiplication du produit_mod, de l'inverse mod et de l'entier
+		for i in range(0,len(L1)):
+			total += L2[i]*tab_prod_partiel[i]*tab_mod_inv[i]
+		r=total%produit_mod
+	return r
+L1=[2,3,5] #modulo
 L2=[1,2,4]
 x=CRT(L1,L2)
 print "CRT(",L1,",",L2,")=",x
@@ -165,15 +199,32 @@ for i in range(0,k):
 	print x," mod ",L1[i],"=",L2[i],"? -->",(x%L1[i])==(L2[i]%L1[i])
 
 def naive_exponentiation(a,k,n):
-	return 0
+	if k > 0:
+		n = abs(n)
+		res = a
+		for i in range(1,k):
+			res = (res * a) %n
+	else:
+		res = 1
+	return res
 
-a=2
-k=8
-n=10
+a=-2
+k=6
+n=-10
 print a,"^",k," mod ",n," = ", naive_exponentiation(a,k,n)
 
 def square_and_multiply(a,k,n):
-	return 0
+	n = abs(n)
+	h = 1
+	size =len(bin(k))-2
+	bits = bin(k)[-size:]
+	i=0
+	while i < size:
+		h = (h*h)%n
+		if bits[i] == 1:
+			h = (h*a)%n
+		i+=1
+	return (a**k)%n
 
 print a,"^",k," mod ",n," = ", square_and_multiply(a,k,n)
 
