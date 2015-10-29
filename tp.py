@@ -213,30 +213,63 @@ k=6
 n=-10
 print a,"^",k," mod ",n," = ", naive_exponentiation(a,k,n)
 
+# Fonctionne
 def square_and_multiply(a,k,n):
 	n = abs(n)
 	h = 1
-	size =len(bin(k))-2
-	bits = bin(k)[-size:]
+	bits = '{0:b}'.format(k)
+	size = len(bits)
 	i=0
 	while i < size:
 		h = (h*h)%n
 		if bits[i] == 1:
 			h = (h*a)%n
-		i+=1
-	return (a**k)%n
+		i = i + 1
+	return h
 
 print a,"^",k," mod ",n," = ", square_and_multiply(a,k,n)
-
 def miller_rabin(n,p):
-	return False
+	assert n >= 2
+	if n == 2:
+		return True
+	if n < 6:  # On optimise pour des petits nombres connus 
+		return [False, False, True, True, False, True][n]
+	elif n & 1 == 0: 
+		return False
+	
+	s = 0
+	d = n - 1
+	while d & 1 == 0:
+		s = s + 1
+		d = d >> 1
+	for i in range(0,p) :
+		a = random.randint(2,n-2)
+		x = square_and_multiply(a, d, n)
+		if x != 1 and x + 1 != n:
+			for r in xrange(1, s):
+				x = square_and_multiply(x, 2, n)
+				if x == 1:
+					return False 
+				elif x == n - 1:
+					a = 0  
+					break  #On continue les tests malgre que tout semble OK 
+			if a:
+				return False  
+	return True  
+ 
 
-n=13
-p=80
-print "miller_rabin(",n,",",p,")=",miller_rabin(n,p)
+n=13 # nombre a tester 
+p=80 # precision
+for i in range(2,30):
+	print "miller_rabin(",i,",",p,")=",miller_rabin(i,p)
+
 
 def generate_prime(k,p):
-	return 2
+	N = random.getrandbits(k)
+	while miller_rabin(N,p) == False:
+		print N, miller_rabin(N,p)		
+		N = random.getrandbits(k)
+	return N
 
 k=100
 p=80
